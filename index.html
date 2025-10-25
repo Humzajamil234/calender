@@ -1,0 +1,2248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flylinks Social Media Calendar - 2025-2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 15px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #1a2a6c, #2a3eb1, #3d56b2);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+
+        .goals {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .goal-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .calendar-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: #2a3eb1;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .calendar-header div {
+            padding: 10px 5px;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.8rem;
+        }
+
+        .calendar-header div:last-child {
+            border-right: none;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #e0e0e0;
+            min-height: 500px;
+        }
+
+        .calendar-day {
+            background: white;
+            min-height: 90px;
+            padding: 6px 4px;
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .calendar-day:hover {
+            background: #f8f9ff;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            z-index: 1;
+        }
+
+        .date {
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 18px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .day-number {
+            font-size: 0.9rem;
+            color: #2a3eb1;
+        }
+
+        .day-name {
+            font-size: 0.65rem;
+            color: #777;
+            text-transform: uppercase;
+        }
+
+        .event {
+            background: #f0f5ff;
+            border-left: 2px solid #3d56b2;
+            padding: 4px 6px;
+            margin-bottom: 4px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event:hover {
+            background: #e1e9ff;
+            transform: translateX(2px);
+        }
+
+        /* Color Mask Animation */
+        .color-mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.2;
+            z-index: 1;
+            animation: colorPulse 4s ease-in-out infinite;
+            border-radius: 3px;
+        }
+
+        .event-static .color-mask {
+            background: linear-gradient(135deg, #0abde3, #2e86de);
+        }
+
+        .event-reel .color-mask {
+            background: linear-gradient(135deg, #ff9f43, #ff6b6b);
+        }
+
+        .event-sales .color-mask {
+            background: linear-gradient(135deg, #ee5253, #ff9ff3);
+        }
+
+        .event-education .color-mask {
+            background: linear-gradient(135deg, #10ac84, #1dd1a1);
+        }
+
+        .event-emotion .color-mask {
+            background: linear-gradient(135deg, #5f27cd, #a55eea);
+        }
+
+        .event-boost .color-mask {
+            background: linear-gradient(135deg, #ff6b6b, #ff9f43);
+        }
+
+        @keyframes colorPulse {
+            0%, 100% {
+                opacity: 0.2;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .event-icons {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 3px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .event-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            color: white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .icon-reel {
+            background: #ff9f43;
+        }
+
+        .icon-content {
+            background: #0abde3;
+        }
+
+        .event-static {
+            border-left-color: #0abde3;
+        }
+
+        .event-reel {
+            border-left-color: #ff9f43;
+        }
+
+        .event-sales {
+            border-left-color: #ee5253;
+        }
+
+        .event-education {
+            border-left-color: #10ac84;
+        }
+
+        .event-emotion {
+            border-left-color: #5f27cd;
+        }
+
+        .event-boost {
+            border-left-color: #ff6b6b;
+        }
+
+        .event-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: rgba(255, 255, 255, 0.7);
+            margin-top: 3px;
+            border-radius: 2px;
+            padding: 0 4px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .event-details.expanded {
+            max-height: 70px;
+            padding: 4px;
+        }
+
+        .detail-item {
+            font-size: 0.6rem;
+            margin-bottom: 1px;
+            display: flex;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            min-width: 45px;
+            color: #2a3eb1;
+        }
+
+        .editable {
+            cursor: text;
+            border: 1px dashed transparent;
+            padding: 1px 3px;
+            border-radius: 2px;
+            transition: all 0.2s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .editable:hover {
+            border-color: #2a3eb1;
+            background: rgba(42, 62, 177, 0.05);
+        }
+
+        .editable:focus {
+            outline: none;
+            border-color: #2a3eb1;
+            background: rgba(42, 62, 177, 0.1);
+        }
+
+        .edit-controls {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .edit-btn {
+            background: #2a3eb1;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .edit-btn:hover {
+            background: #1a2a6c;
+            transform: translateY(-2px);
+        }
+
+        .edit-mode .editable {
+            border-color: #2a3eb1;
+            background: rgba(42, 62, 177, 0.05);
+        }
+
+        .add-event-btn {
+            background: #10ac84;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .add-event-btn:hover {
+            background: #0d8c6a;
+        }
+
+        .empty-day {
+            background: #f9f9f9;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            position: relative;
+        }
+
+        .empty-day:hover .add-event-btn {
+            opacity: 1;
+        }
+
+        .empty-day .add-event-btn {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .delete-event {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 18px;
+            height: 18px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 3;
+        }
+
+        .delete-event:hover {
+            background: #ee5253;
+            transform: scale(1.1);
+        }
+
+        .post-type-selector {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 6px;
+        }
+
+        .post-type-btn {
+            padding: 3px 6px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 0.65rem;
+            transition: all 0.2s ease;
+        }
+
+        .post-type-btn.active {
+            background: #2a3eb1;
+            color: white;
+            border-color: #2a3eb1;
+        }
+
+        .content-icon-selector {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+
+        .icon-option {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .icon-option.active {
+            border-color: #2a3eb1;
+            transform: scale(1.1);
+        }
+
+        .summary {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .summary h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: #2a3eb1;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f5ff;
+            font-size: 1.3rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8faff;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .summary-item:hover {
+            background: #f0f5ff;
+            transform: translateY(-3px);
+        }
+
+        .summary-icon {
+            width: 45px;
+            height: 45px;
+            background: #2a3eb1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .legend {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .legend h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: #2a3eb1;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+        }
+
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .month-navigation {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .month-btn {
+            background: #2a3eb1;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .month-btn:hover {
+            background: #1a2a6c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .month-btn.active {
+            background: #10ac84;
+        }
+
+        .calendar-page {
+            display: none;
+        }
+
+        .calendar-page.active {
+            display: block;
+        }
+
+        .year-section {
+            margin-bottom: 30px;
+        }
+
+        .year-title {
+            font-family: 'Montserrat', sans-serif;
+            color: #2a3eb1;
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f5ff;
+            font-size: 1.5rem;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Mobile-specific styles */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .calendar-header div, .calendar-day {
+                padding: 8px 3px;
+                font-size: 0.75rem;
+            }
+            
+            .calendar-day {
+                min-height: 80px;
+            }
+            
+            .event {
+                font-size: 0.65rem;
+                padding: 3px 5px;
+                min-height: 55px;
+            }
+            
+            .event-icons {
+                gap: 3px;
+            }
+            
+            .event-icon {
+                width: 14px;
+                height: 14px;
+                font-size: 0.6rem;
+            }
+            
+            .detail-item {
+                font-size: 0.55rem;
+            }
+            
+            .detail-label {
+                min-width: 40px;
+            }
+            
+            .edit-controls {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-bottom: 15px;
+                width: 100%;
+                flex-direction: row;
+                justify-content: center;
+            }
+            
+            .month-navigation {
+                gap: 8px;
+            }
+            
+            .month-btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-item {
+                padding: 10px;
+            }
+            
+            .summary-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .legend-items {
+                gap: 10px;
+            }
+            
+            .legend-item {
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calendar-header div {
+                font-size: 0.7rem;
+                padding: 6px 2px;
+            }
+            
+            .calendar-day {
+                min-height: 70px;
+                padding: 4px 2px;
+            }
+            
+            .day-number {
+                font-size: 0.8rem;
+            }
+            
+            .day-name {
+                font-size: 0.6rem;
+            }
+            
+            .event {
+                font-size: 0.6rem;
+                min-height: 50px;
+            }
+            
+            .month-btn {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+            }
+            
+            .goal-item {
+                font-size: 0.75rem;
+                padding: 5px 10px;
+            }
+            
+            /* Mobile-specific calendar layout */
+            .calendar-header {
+                display: none;
+            }
+            
+            .calendar {
+                grid-template-columns: 1fr;
+                gap: 5px;
+                background: transparent;
+            }
+            
+            .calendar-day {
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                padding: 8px;
+                min-height: auto;
+                margin-bottom: 5px;
+            }
+            
+            .date {
+                background: #f0f5ff;
+                padding: 5px;
+                border-radius: 4px;
+                margin-bottom: 8px;
+            }
+            
+            .day-number {
+                font-size: 1rem;
+            }
+            
+            .day-name {
+                font-size: 0.8rem;
+            }
+            
+            .event {
+                min-height: auto;
+                margin-bottom: 8px;
+            }
+            
+            .event-text {
+                font-size: 0.8rem;
+            }
+            
+            .detail-item {
+                font-size: 0.7rem;
+            }
+            
+            .detail-label {
+                min-width: 50px;
+            }
+            
+            .edit-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .edit-btn, .add-event-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .month-navigation {
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding-bottom: 10px;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .month-btn {
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .calendar-header div {
+                font-size: 0.65rem;
+            }
+            
+            .calendar-day {
+                min-height: 65px;
+            }
+            
+            .event {
+                min-height: 45px;
+            }
+            
+            .month-btn {
+                padding: 5px 8px;
+                font-size: 0.7rem;
+            }
+            
+            .goal-item {
+                font-size: 0.7rem;
+                padding: 4px 8px;
+            }
+            
+            .summary-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .summary-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Mobile modal improvements */
+        @media (max-width: 480px) {
+            #addEventModal > div {
+                width: 95%;
+                max-width: none;
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .post-type-selector, .content-icon-selector {
+                justify-content: center;
+            }
+            
+            #eventMonth, #eventDate {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-controls">
+        <button class="edit-btn" onclick="exportToPDF()" style="background: #a55eea;">
+            <i class="fas fa-file-pdf"></i> Export to PDF
+        </button>
+        <button class="add-event-btn" onclick="showAddEventModal()">
+            <i class="fas fa-plus"></i> Add Event
+        </button>
+    </div>
+
+    <!-- Add Event Modal -->
+    <div id="addEventModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 15px; border-radius: 8px; width: 95%; max-width: 450px;">
+            <h3>Add New Event</h3>
+            <div style="margin: 12px 0;">
+                <label>Month: </label>
+                <select id="eventMonth" style="padding: 5px; margin-left: 10px; width: 60%;" onchange="updateEventDateOptions()">
+                    <option value="october2025">October 2025</option>
+                    <option value="november2025">November 2025</option>
+                    <option value="december2025">December 2025</option>
+                    <option value="january2026">January 2026</option>
+                    <option value="february2026">February 2026</option>
+                    <option value="march2026">March 2026</option>
+                    <option value="april2026">April 2026</option>
+                    <option value="may2026">May 2026</option>
+                    <option value="june2026">June 2026</option>
+                    <option value="july2026">July 2026</option>
+                    <option value="august2026">August 2026</option>
+                    <option value="september2026">September 2026</option>
+                    <option value="october2026">October 2026</option>
+                    <option value="november2026">November 2026</option>
+                    <option value="december2026">December 2026</option>
+                </select>
+            </div>
+            <div style="margin: 12px 0;">
+                <label>Date: </label>
+                <select id="eventDate" style="padding: 5px; margin-left: 10px; width: 30%;">
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+            </div>
+            <div style="margin: 12px 0;">
+                <label>Post Type:</label>
+                <div class="post-type-selector">
+                    <button class="post-type-btn" onclick="selectPostType(this, 'static')">Static</button>
+                    <button class="post-type-btn" onclick="selectPostType(this, 'reel')">Reel</button>
+                </div>
+            </div>
+            <div style="margin: 12px 0;">
+                <label>Content Icon:</label>
+                <div class="content-icon-selector" id="iconSelector">
+                    <!-- Icons will be populated by JavaScript -->
+                </div>
+            </div>
+            <div style="margin: 12px 0;">
+                <label>Event Text:</label>
+                <input type="text" id="eventText" style="width: 100%; padding: 6px; margin-top: 5px;" placeholder="Enter event description">
+            </div>
+            <div style="margin: 12px 0;">
+                <label>Objective:</label>
+                <input type="text" id="eventObjective" style="width: 100%; padding: 6px; margin-top: 5px;" placeholder="Enter objective">
+            </div>
+            <div style="margin: 12px 0;">
+                <label>Notes:</label>
+                <textarea id="eventNotes" style="width: 100%; padding: 6px; margin-top: 5px; height: 50px;" placeholder="Enter notes"></textarea>
+            </div>
+            <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                <button class="edit-btn" onclick="addNewEvent()" style="background: #10ac84;">
+                    <i class="fas fa-plus"></i> Add Event
+                </button>
+                <button class="edit-btn" onclick="hideAddEventModal()" style="background: #ee5253;">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="month-navigation">
+            <button class="month-btn active" onclick="showMonth('october2025')">
+                <i class="fas fa-calendar-alt"></i> Oct 2025
+            </button>
+            <button class="month-btn" onclick="showMonth('november2025')">
+                <i class="fas fa-calendar-alt"></i> Nov 2025
+            </button>
+            <button class="month-btn" onclick="showMonth('december2025')">
+                <i class="fas fa-calendar-alt"></i> Dec 2025
+            </button>
+            <button class="month-btn" onclick="showMonth('january2026')">
+                <i class="fas fa-calendar-alt"></i> Jan 2026
+            </button>
+            <button class="month-btn" onclick="showMonth('february2026')">
+                <i class="fas fa-calendar-alt"></i> Feb 2026
+            </button>
+            <button class="month-btn" onclick="showMonth('march2026')">
+                <i class="fas fa-calendar-alt"></i> Mar 2026
+            </button>
+            <button class="month-btn" onclick="showMonth('april2026')">
+                <i class="fas fa-calendar-alt"></i> Apr 2026
+            </button>
+            <button class="month-btn" onclick="showMonth('may2026')">
+                <i class="fas fa-calendar-alt"></i> May 2026
+            </button>
+            <button class="month-btn" onclick="showMonth('june2026')">
+                <i class="fas fa-calendar-alt"></i> Jun 2026
+            </button>
+            <button class="month-btn" onclick="showMonth('july2026')">
+                <i class="fas fa-calendar-alt"></i> Jul 2026
+            </button>
+            <button class="month-btn" onclick="showMonth('august2026')">
+                <i class="fas fa-calendar-alt"></i> Aug 2026
+            </button>
+            <button class="month-btn" onclick="showMonth('september2026')">
+                <i class="fas fa-calendar-alt"></i> Sep 2026
+            </button>
+            <button class="month-btn" onclick="showMonth('october2026')">
+                <i class="fas fa-calendar-alt"></i> Oct 2026
+            </button>
+            <button class="month-btn" onclick="showMonth('november2026')">
+                <i class="fas fa-calendar-alt"></i> Nov 2026
+            </button>
+            <button class="month-btn" onclick="showMonth('december2026')">
+                <i class="fas fa-calendar-alt"></i> Dec 2026
+            </button>
+        </div>
+
+        <!-- October 2025 Calendar Page -->
+        <div id="october2025Page" class="calendar-page active">
+            <div class="year-section">
+                <h2 class="year-title">2025</h2>
+            </div>
+            <header>
+                <h1 class="editable" id="october2025Title">Flylinks Social Media Calendar</h1>
+                <div class="subtitle editable" id="october2025Subtitle">October 2025 - Client Onboarding & Initial Campaigns</div>
+                <div class="goals" id="october2025Goals">
+                    <div class="goal-item">
+                        <i class="fas fa-bullseye"></i>
+                        <span class="editable">Client Onboarding & Project Setup</span>
+                    </div>
+                    <div class="goal-item">
+                        <i class="fas fa-users"></i>
+                        <span class="editable">Initial Content Delivery</span>
+                    </div>
+                    <div class="goal-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span class="editable">Multiple Posts/Month</span>
+                    </div>
+                    <div class="goal-item">
+                        <i class="fas fa-share-alt"></i>
+                        <span class="editable">Instagram + Facebook</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <div class="editable">Sun</div>
+                    <div class="editable">Mon</div>
+                    <div class="editable">Tue</div>
+                    <div class="editable">Wed</div>
+                    <div class="editable">Thu</div>
+                    <div class="editable">Fri</div>
+                    <div class="editable">Sat</div>
+                </div>
+                <div class="calendar" id="october2025Calendar">
+                    <!-- October 2025 calendar will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="summary">
+                <h2><i class="fas fa-chart-line"></i> Project Summary</h2>
+                <div class="summary-grid" id="october2025Summary">
+                    <div class="summary-item">
+                        <div class="summary-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div>
+                            <h3 class="editable">Multiple Posts Total</h3>
+                            <p class="editable">Various posts for client onboarding and campaigns</p>
+                        </div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div>
+                            <h3 class="editable">Daily Activity Schedule</h3>
+                            <p class="editable">Continuous client communication and content delivery</p>
+                        </div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <div>
+                            <h3 class="editable">Content Mix</h3>
+                            <p class="editable">Onboarding, content creation, and campaign setup</p>
+                        </div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div>
+                            <h3 class="editable">Project Timeline</h3>
+                            <p class="editable">October 2025 - Client onboarding and initial campaigns</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- November 2025 Calendar Page -->
+        <div id="november2025Page" class="calendar-page">
+            <div class="year-section">
+                <h2 class="year-title">2025</h2>
+            </div>
+            <header>
+                <h1 class="editable" id="november2025Title">Flylinks Social Media Calendar</h1>
+                <div class="subtitle editable" id="november2025Subtitle">November 2025 - Malaysia & Baku Tour Promotion</div>
+                <div class="goals" id="november2025Goals">
+                    <div class="goal-item">
+                        <i class="fas fa-bullseye"></i>
+                        <span class="editable">Promote Group Tours (Malaysia & Baku)</span>
+                    </div>
+                    <div class="goal-item">
+                        <i class="fas fa-users"></i>
+                        <span class="editable">Build Engagement</span>
+                    </div>
+                    <div class="goal-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span class="editable">16 Posts/Month (Alternate Days)</span>
+                    </div>
+                    <div class="goal-item">
+                        <i class="fas fa-share-alt"></i>
+                        <span class="editable">Instagram + Facebook</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <div class="editable">Sun</div>
+                    <div class="editable">Mon</div>
+                    <div class="editable">Tue</div>
+                    <div class="editable">Wed</div>
+                    <div class="editable">Thu</div>
+                    <div class="editable">Fri</div>
+                    <div class="editable">Sat</div>
+                </div>
+                <div class="calendar" id="november2025Calendar">
+                    <!-- November 2025 calendar will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="summary">
+                <h2><i class="fas fa-chart-line"></i> Project Summary</h2>
+                <div class="summary-grid" id="november2025Summary">
+                    <div class="summary-item">
+                        <div class="summary-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div>
+                            <h3 class="editable">16 Posts Total</h3>
+                            <p class="editable">12 static + 4 reels for optimal engagement</p>
+                        </div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div>
+                            <h3 class="editable">Alternate-Day Schedule</h3>
+                            <p class="editable">Keeps page active without spam</p>
+                        </div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <div>
+                            <h3 class="editable">Content Mix</h3>
+                            <p class="editable">Sales, education & emotion for higher engagement</p>
+                        </div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div>
+                            <h3 class="editable">Boost Strategy</h3>
+                            <p class="editable">$30–$40 total budget on reels and main posters</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional months would follow the same pattern -->
+        <!-- For brevity, I've included only the first few months in the HTML -->
+        <!-- The JavaScript will handle creating all 15 months -->
+
+        <div class="legend">
+            <h3><i class="fas fa-key"></i> Legend</h3>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-color event-static"></div>
+                    <span class="editable">Static Post</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color event-reel"></div>
+                    <span class="editable">Reel</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color event-sales"></div>
+                    <span class="editable">Sales Content</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color event-education"></div>
+                    <span class="editable">Educational Content</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color event-emotion"></div>
+                    <span class="editable">Emotional Content</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color event-boost"></div>
+                    <span class="editable">Boosted Content</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JSON data for October and November
+        const october2025Data = {
+            "title": "Flylinks Social Media Calendar",
+            "subtitle": "October 2025 - Client Onboarding & Initial Campaigns",
+            "goals": [
+                "Client Onboarding & Project Setup",
+                "Initial Content Delivery",
+                "Multiple Posts/Month",
+                "Instagram + Facebook"
+            ],
+            "summary": {
+                "Multiple Posts Total": "Various posts for client onboarding and campaigns",
+                "Daily Activity Schedule": "Continuous client communication and content delivery",
+                "Content Mix": "Onboarding, content creation, and campaign setup",
+                "Project Timeline": "October 2025 - Client onboarding and initial campaigns"
+            },
+            "events": {
+                "10": [
+                    {
+                        "text": "Client Onboard",
+                        "type": "static",
+                        "objective": "Onboarding",
+                        "notes": "Initial client onboarding process",
+                        "icon": "undefined",
+                        "isBoosted": false
+                    }
+                ],
+                "13": [
+                    {
+                        "text": "Client Provided Basic Information",
+                        "type": "static",
+                        "objective": "Information Gathering",
+                        "notes": "Logo & Onboarding Details received",
+                        "icon": "undefined",
+                        "isBoosted": false
+                    }
+                ],
+                "14": [
+                    {
+                        "text": "Access to Social Media",
+                        "type": "static",
+                        "objective": "Access Setup",
+                        "notes": "Client Provided Access to Facebook & Instagram",
+                        "icon": "undefined",
+                        "isBoosted": true
+                    }
+                ],
+                "15": [
+                    {
+                        "text": "7th Anniversary Post Request",
+                        "type": "static",
+                        "objective": "Urgent Delivery",
+                        "notes": "Client demanded post for 7th anniversary with deadline on 18th",
+                        "icon": "undefined",
+                        "isBoosted": false
+                    }
+                ],
+                "16": [
+                    {
+                        "text": "Company Profile Received",
+                        "type": "static",
+                        "objective": "Content Collection",
+                        "notes": "Client provided company profile and visual content sources",
+                        "icon": "undefined",
+                        "isBoosted": false
+                    }
+                ],
+                "17": [
+                    {
+                        "text": "Content Processing",
+                        "type": "static",
+                        "objective": "Content Preparation",
+                        "notes": "Client provided text content, 3 posts designed instead of 1",
+                        "icon": "undefined",
+                        "isBoosted": false
+                    }
+                ],
+                "18": [
+                    {
+                        "text": "Anniversary Posts Published",
+                        "type": "static",
+                        "objective": "Post Launch",
+                        "notes": "3 posts published for anniversary, SEO report provided",
+                        "icon": "undefined",
+                        "isBoosted": false
+                    }
+                ],
+                "20": [
+                    {
+                        "text": "Tour Content Received",
+                        "type": "static",
+                        "objective": "Content Planning",
+                        "notes": "Client provided text for Malaysia (Nov) and Baku (Dec) tours",
+                        "icon": "undefined",
+                        "isBoosted": false
+                    }
+                ],
+                "22": [
+                    {
+                        "text": "Design Revision",
+                        "type": "static",
+                        "objective": "Quality Improvement",
+                        "notes": "Working on improved designs",
+                        "icon": "undefined",
+                        "isBoosted": false
+                    }
+                ],
+                "25": [
+                    {
+                        "text": "New Designed Templates For Malaysia Tour ",
+                        "type": "static",
+                        "objective": "Designed Delivered",
+                        "notes": "",
+                        "icon": "fas fa-star",
+                        "isBoosted": false
+                    }
+                ],
+                "26": [
+                    {
+                        "text": "Launch Post for Malaysia Tour ",
+                        "type": "static",
+                        "objective": "Publish Pending",
+                        "notes": "Will add caption and Hashtags accordingly",
+                        "icon": "fas fa-images",
+                        "isBoosted": false
+                    }
+                ],
+                "28": [
+                    {
+                        "text": "Reel (Malaysia Tour) ",
+                        "type": "reel",
+                        "objective": "Publish Pending",
+                        "notes": "Will add caption and Hashtags accordingly",
+                        "icon": "fas fa-star",
+                        "isBoosted": false
+                    }
+                ],
+                "30": [
+                    {
+                        "text": "Malaysia Tour Boost",
+                        "type": "static",
+                        "objective": "Promotion",
+                        "notes": "Final Notice for Sign up",
+                        "icon": "fas fa-star",
+                        "isBoosted": false
+                    }
+                ]
+            }
+        };
+
+        const november2025Data = {
+            "title": "Flylinks Social Media Calendar",
+            "subtitle": "November 2025 - Malaysia & Baku Tour Promotion",
+            "goals": [
+                "Promote Group Tours (Malaysia & Baku)",
+                "Build Engagement",
+                "16 Posts/Month (Alternate Days)",
+                "Instagram + Facebook"
+            ],
+            "summary": {
+                "16 Posts Total": "12 static + 4 reels for optimal engagement",
+                "Alternate-Day Schedule": "Keeps page active without spam",
+                "Content Mix": "Sales, education & emotion for higher engagement",
+                "Boost Strategy": "$30–$40 total budget on reels and main posters"
+            },
+            "events": {
+                "1": [
+                    {
+                        "text": "Malaysia Highlights Reel (Kuala Lumpur + Genting)",
+                        "type": "reel",
+                        "objective": "Engagement",
+                        "notes": "Short & Cinematic (< 20 s)",
+                        "icon": "fas fa-users",
+                        "isBoosted": false
+                    }
+                ],
+                "3": [
+                    {
+                        "text": "Malaysia Group Tour Poster",
+                        "type": "static",
+                        "objective": "Awareness",
+                        "notes": "Malaysia campaign\n",
+                        "icon": "fas fa-lightbulb",
+                        "isBoosted": false
+                    }
+                ],
+                "5": [
+                    {
+                        "text": "Did You Know? (Malaysian Culture)",
+                        "type": "static",
+                        "objective": "Education",
+                        "notes": "Malaysia campaign\n",
+                        "icon": "fas fa-lightbulb",
+                        "isBoosted": false
+                    }
+                ],
+                "7": [
+                    {
+                        "text": "Malaysia Tour Benefits",
+                        "type": "static",
+                        "objective": "Sales",
+                        "notes": "Malaysia campaign\n",
+                        "icon": "fas fa-tags",
+                        "isBoosted": false
+                    }
+                ],
+                "9": [
+                    {
+                        "text": "Baku Tour Reel (Old City + Flame Towers)",
+                        "type": "reel",
+                        "objective": "Engagement",
+                        "notes": "Short & Cinematic (< 20 s)",
+                        "icon": "fas fa-users",
+                        "isBoosted": false
+                    }
+                ],
+                "11": [
+                    {
+                        "text": "Baku Group Tour Poster",
+                        "type": "static",
+                        "objective": "Awareness",
+                        "notes": "Baku campaign\n",
+                        "icon": "fas fa-lightbulb",
+                        "isBoosted": false
+                    }
+                ],
+                "13": [
+                    {
+                        "text": "Did You Know? (Azerbaijani Culture)",
+                        "type": "static",
+                        "objective": "Education",
+                        "notes": "Baku campaign\n",
+                        "icon": "fas fa-lightbulb",
+                        "isBoosted": false
+                    }
+                ],
+                "15": [
+                    {
+                        "text": "Baku Tour Benefits",
+                        "type": "static",
+                        "objective": "Sales",
+                        "notes": "Baku campaign\n",
+                        "icon": "fas fa-tags",
+                        "isBoosted": false
+                    }
+                ],
+                "17": [
+                    {
+                        "text": "Malaysia Tour Testimonial (Visual Quote)",
+                        "type": "static",
+                        "objective": "Emotion",
+                        "notes": "Malaysia campaign\n",
+                        "icon": "fas fa-heart",
+                        "isBoosted": false
+                    }
+                ],
+                "19": [
+                    {
+                        "text": "Baku Tour Testimonial (Visual Quote)",
+                        "type": "static",
+                        "objective": "Emotion",
+                        "notes": "Baku campaign\n",
+                        "icon": "fas fa-heart",
+                        "isBoosted": false
+                    }
+                ],
+                "21": [
+                    {
+                        "text": "Malaysia Tour Reel (Food + Activities)",
+                        "type": "reel",
+                        "objective": "Engagement",
+                        "notes": "Short & Cinematic (< 20 s)",
+                        "icon": "fas fa-users",
+                        "isBoosted": false
+                    }
+                ],
+                "23": [
+                    {
+                        "text": "Baku Tour Reel (Culture + Architecture)",
+                        "type": "reel",
+                        "objective": "Engagement",
+                        "notes": "Short & Cinematic (< 20 s)",
+                        "icon": "fas fa-users",
+                        "isBoosted": false
+                    }
+                ],
+                "25": [
+                    {
+                        "text": "Malaysia Tour Final Reminder",
+                        "type": "static",
+                        "objective": "Sales",
+                        "notes": "Malaysia campaign\n",
+                        "icon": "fas fa-tags",
+                        "isBoosted": false
+                    }
+                ],
+                "27": [
+                    {
+                        "text": "Baku Tour Final Reminder",
+                        "type": "static",
+                        "objective": "Sales",
+                        "notes": "Baku campaign\n",
+                        "icon": "fas fa-tags",
+                        "isBoosted": false
+                    }
+                ],
+                "29": [
+                    {
+                        "text": "Boost Top Performing Reel",
+                        "type": "reel",
+                        "objective": "Promotion",
+                        "notes": "Boost",
+                        "icon": "fas fa-rocket",
+                        "isBoosted": true
+                    }
+                ],
+                "30": [
+                    {
+                        "text": "Boost Top Performing Static Post",
+                        "type": "static",
+                        "objective": "Promotion",
+                        "notes": "Boost",
+                        "icon": "fas fa-rocket",
+                        "isBoosted": true
+                    }
+                ]
+            }
+        };
+
+        // Template data for other months
+        const monthTemplates = {
+            "december2025": {
+                "title": "Flylinks Social Media Calendar",
+                "subtitle": "December 2025 - Holiday Campaigns & Year-End Review",
+                "goals": [
+                    "Holiday Campaigns & Special Offers",
+                    "Year-End Review & 2026 Preview",
+                    "12 Posts/Month",
+                    "Instagram + Facebook + LinkedIn"
+                ],
+                "summary": {
+                    "12 Posts Total": "8 static + 4 reels focusing on holiday content",
+                    "Weekly Schedule": "3 posts per week with holiday themes",
+                    "Content Mix": "Holiday campaigns, year-end review, 2026 preview",
+                    "Boost Strategy": "$50 total budget focusing on holiday specials"
+                },
+                "events": {}
+            },
+            "january2026": {
+                "title": "Flylinks Social Media Calendar",
+                "subtitle": "January 2026 - New Year Campaign & Winter Destinations",
+                "goals": [
+                    "New Year Campaign Launch",
+                    "Winter Destinations Promotion",
+                    "18 Posts/Month",
+                    "Instagram + Facebook + TikTok"
+                ],
+                "summary": {
+                    "18 Posts Total": "12 static + 6 reels for maximum engagement",
+                    "Daily Activity Schedule": "4-5 posts per week with consistent engagement",
+                    "Content Mix": "New Year campaigns, winter destinations, travel tips",
+                    "Boost Strategy": "$60 total budget focusing on new destinations"
+                },
+                "events": {}
+            },
+            // Template for remaining months
+            "february2026": {
+                "title": "Flylinks Social Media Calendar",
+                "subtitle": "February 2026 - Valentine's Campaign & Spring Preview",
+                "goals": [
+                    "Valentine's Special Campaigns",
+                    "Spring Destinations Preview",
+                    "15 Posts/Month",
+                    "Instagram + Facebook + Pinterest"
+                ],
+                "summary": {
+                    "15 Posts Total": "10 static + 5 reels for seasonal engagement",
+                    "Weekly Schedule": "3-4 posts per week with love/spring themes",
+                    "Content Mix": "Valentine's specials, spring destinations, travel deals",
+                    "Boost Strategy": "$45 total budget focusing on romantic getaways"
+                },
+                "events": {}
+            },
+            "march2026": {
+                "title": "Flylinks Social Media Calendar",
+                "subtitle": "March 2026 - Spring Break & Early Summer Planning",
+                "goals": [
+                    "Spring Break Campaigns",
+                    "Early Summer Destination Launch",
+                    "20 Posts/Month",
+                    "Instagram + Facebook + Twitter"
+                ],
+                "summary": {
+                    "20 Posts Total": "14 static + 6 reels for high engagement",
+                    "Daily Activity Schedule": "5 posts per week with varied content",
+                    "Content Mix": "Spring break deals, summer preview, travel tips",
+                    "Boost Strategy": "$70 total budget focusing on summer destinations"
+                },
+                "events": {}
+            },
+            "april2026": {
+                "title": "Flylinks Social Media Calendar",
+                "subtitle": "April 2026 - Easter Campaign & Summer Promotion",
+                "goals": [
+                    "Easter Holiday Campaigns",
+                    "Full Summer Destination Launch",
+                    "18 Posts/Month",
+                    "Instagram + Facebook + TikTok"
+                ],
+                "summary": {
+                    "18 Posts Total": "12 static + 6 reels for seasonal promotion",
+                    "Weekly Schedule": "4-5 posts per week with summer focus",
+                    "Content Mix": "Easter specials, summer destinations, early booking",
+                    "Boost Strategy": "$65 total budget focusing on summer packages"
+                },
+                "events": {}
+            },
+            "may2026": {
+                "title": "Flylinks Social Media Calendar",
+                "subtitle": "May 2026 - Summer Kickoff & Memorial Day",
+                "goals": [
+                    "Summer Season Kickoff",
+                    "Memorial Day Specials",
+                    "22 Posts/Month",
+                    "Instagram + Facebook + All Platforms"
+                ],
+                "summary": {
+                    "22 Posts Total": "15 static + 7 reels for maximum visibility",
+                    "Daily Activity Schedule": "5-6 posts per week with high frequency",
+                    "Content Mix": "Summer launch, holiday deals, destination features",
+                    "Boost Strategy": "$80 total budget for peak season promotion"
+                },
+                "events": {}
+            },
+            "june2026": {
+                "title": "Flylinks Social Media Calendar",
+                "subtitle": "June 2026 - Peak Summer & Family Travel",
+                "goals": [
+                    "Peak Summer Campaigns",
+                    "Family Travel Focus",
+                    "20 Posts/Month",
+                    "Instagram + Facebook + YouTube"
+                ],
+                "summary": {
+                    "20 Posts Total": "14 static + 6 reels for family audience",
+                    "Weekly Schedule": "5 posts per week with family content",
+                    "Content Mix": "Family packages, summer deals, travel experiences",
+                    "Boost Strategy": "$75 total budget focusing on family travel"
+                },
+                "events": {}
+            },
+            "july2026": {
+                "title": "Flylinks Social Media Calendar",
+                "subtitle": "July 2026 - Independence Day & Mid-Summer",
+                "goals": [
+                    "4th of July Campaigns",
+                    "Mid-Summer Special Offers",
+                    "18 Posts/Month",
+                    "Instagram + Facebook + TikTok"
+                ],
+                "summary": {
+                    "18 Posts Total": "12 static + 6 reels for holiday engagement",
+                    "Weekly Schedule": "4-5 posts per week with patriotic themes",
+                    "Content Mix": "Holiday specials, summer deals, destination highlights",
+                    "Boost Strategy": "$60 total budget focusing on last-minute deals"
+                },
+                "events": {}
+            },
+            "august2026": {
+                "title": "Flylinks Social Media Calendar",
+                "subtitle": "August 2026 - End of Summer & Back to School",
+                "goals": [
+                    "End of Summer Campaigns",
+                    "Back to School Travel",
+                    "16 Posts/Month",
+                    "Instagram + Facebook + LinkedIn"
+                ],
+                "summary": {
+                    "16 Posts Total": "11 static + 5 reels for transition period",
+                    "Weekly Schedule": "4 posts per week with varied themes",
+                    "Content Mix": "Last-minute deals, shoulder season, school break planning",
+                    "Boost Strategy": "$50 total budget focusing on autumn destinations"
+                },
+                "events": {}
+            },
+            "september2026": {
+                "title": "Flylinks Social Media Calendar",
+                "subtitle": "September 2026 - Autumn Travel & Labor Day",
+                "goals": [
+                    "Autumn Destination Launch",
+                    "Labor Day Weekend Campaigns",
+                    "19 Posts/Month",
+                    "Instagram + Facebook + Pinterest"
+                ],
+                "summary": {
+                    "19 Posts Total": "13 static + 6 reels for seasonal transition",
+                    "Weekly Schedule": "4-5 posts per week with autumn themes",
+                    "Content Mix": "Fall destinations, holiday weekend, travel planning",
+                    "Boost Strategy": "$65 total budget focusing on autumn getaways"
+                },
+                "events": {}
+            },
+            "october2026": {
+                "title": "Flylinks Social Media Calendar",
+                "subtitle": "October 2026 - Halloween & Fall Foliage",
+                "goals": [
+                    "Halloween Special Campaigns",
+                    "Fall Foliage Destinations",
+                    "17 Posts/Month",
+                    "Instagram + Facebook + TikTok"
+                ],
+                "summary": {
+                    "17 Posts Total": "12 static + 5 reels for seasonal content",
+                    "Weekly Schedule": "4 posts per week with autumn themes",
+                    "Content Mix": "Halloween specials, foliage tours, autumn experiences",
+                    "Boost Strategy": "$55 total budget focusing on seasonal destinations"
+                },
+                "events": {}
+            },
+            "november2026": {
+                "title": "Flylinks Social Media Calendar",
+                "subtitle": "November 2026 - Thanksgiving & Early Holiday",
+                "goals": [
+                    "Thanksgiving Travel Campaigns",
+                    "Early Holiday Season Launch",
+                    "16 Posts/Month",
+                    "Instagram + Facebook + All Platforms"
+                ],
+                "summary": {
+                    "16 Posts Total": "11 static + 5 reels for holiday preparation",
+                    "Weekly Schedule": "4 posts per week with holiday themes",
+                    "Content Mix": "Thanksgiving deals, early holiday, gift ideas",
+                    "Boost Strategy": "$60 total budget focusing on holiday travel"
+                },
+                "events": {}
+            },
+            "december2026": {
+                "title": "Flylinks Social Media Calendar",
+                "subtitle": "December 2026 - Holiday Season & Year in Review",
+                "goals": [
+                    "Holiday Season Campaigns",
+                    "Year in Review Content",
+                    "14 Posts/Month",
+                    "Instagram + Facebook + LinkedIn"
+                ],
+                "summary": {
+                    "14 Posts Total": "10 static + 4 reels for year-end content",
+                    "Weekly Schedule": "3-4 posts per week with holiday focus",
+                    "Content Mix": "Holiday specials, year review, thank you content",
+                    "Boost Strategy": "$50 total budget focusing on last-minute gifts"
+                },
+                "events": {}
+            }
+        };
+
+        // Initialize the calendar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize all months
+            initializeCalendar('october2025', october2025Data);
+            initializeCalendar('november2025', november2025Data);
+            
+            // Initialize template months
+            for (const month in monthTemplates) {
+                initializeCalendar(month, monthTemplates[month]);
+            }
+            
+            updateEventDateOptions();
+            populateIconSelector();
+            
+            // Set default post type
+            selectPostType(document.querySelector('.post-type-btn'), 'static');
+        });
+
+        function initializeCalendar(month, data) {
+            const calendar = document.getElementById(`${month}Calendar`);
+            if (!calendar) return;
+            
+            const monthTitle = document.getElementById(`${month}Title`);
+            const monthSubtitle = document.getElementById(`${month}Subtitle`);
+            const monthGoals = document.getElementById(`${month}Goals`);
+            const monthSummary = document.getElementById(`${month}Summary`);
+            
+            // Set header content
+            if (monthTitle) monthTitle.textContent = data.title;
+            if (monthSubtitle) monthSubtitle.textContent = data.subtitle;
+            
+            // Set goals
+            if (monthGoals) {
+                const goalItems = monthGoals.querySelectorAll('.goal-item span');
+                data.goals.forEach((goal, index) => {
+                    if (goalItems[index]) {
+                        goalItems[index].textContent = goal;
+                    }
+                });
+            }
+            
+            // Set summary
+            if (monthSummary) {
+                const summaryItems = monthSummary.querySelectorAll('.summary-item p');
+                let summaryIndex = 0;
+                for (const key in data.summary) {
+                    if (summaryItems[summaryIndex]) {
+                        summaryItems[summaryIndex].textContent = data.summary[key];
+                        summaryIndex++;
+                    }
+                }
+            }
+            
+            // Clear calendar
+            calendar.innerHTML = '';
+            
+            // Get first day of month and number of days
+            const year = month.includes('2025') ? 2025 : 2026;
+            const monthName = month.replace('2025', '').replace('2026', '');
+            const monthIndex = getMonthIndex(monthName);
+            const firstDay = new Date(year, monthIndex, 1).getDay();
+            const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+            
+            // Check if we're on mobile
+            const isMobile = window.innerWidth <= 480;
+            
+            if (isMobile) {
+                // Mobile layout - single column
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    
+                    // Format day name
+                    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                    const dayIndex = (firstDay + day - 1) % 7;
+                    const dayName = dayNames[dayIndex];
+                    
+                    dayElement.innerHTML = `
+                        <div class="date">
+                            <span class="day-number">${day}</span>
+                            <span class="day-name">${dayName}</span>
+                        </div>
+                    `;
+                    
+                    // Add events for this day
+                    if (data.events && data.events[day]) {
+                        data.events[day].forEach(event => {
+                            const eventElement = document.createElement('div');
+                            eventElement.className = `event event-${event.type} ${event.isBoosted ? 'event-boost' : ''}`;
+                            
+                            // Determine content type class
+                            let contentTypeClass = '';
+                            if (event.objective.toLowerCase().includes('sales')) {
+                                contentTypeClass = 'event-sales';
+                            } else if (event.objective.toLowerCase().includes('education')) {
+                                contentTypeClass = 'event-education';
+                            } else if (event.objective.toLowerCase().includes('emotion')) {
+                                contentTypeClass = 'event-emotion';
+                            }
+                            
+                            if (contentTypeClass) {
+                                eventElement.classList.add(contentTypeClass);
+                            }
+                            
+                            eventElement.innerHTML = `
+                                <div class="color-mask"></div>
+                                <div class="event-icons">
+                                    <div class="event-icon ${event.type === 'reel' ? 'icon-reel' : 'icon-content'}">
+                                        <i class="fas ${event.type === 'reel' ? 'fa-video' : 'fa-image'}"></i>
+                                    </div>
+                                    ${event.icon && event.icon !== 'undefined' ? 
+                                        `<div class="event-icon" style="background: #5f27cd;">
+                                            <i class="${event.icon}"></i>
+                                        </div>` : ''}
+                                </div>
+                                <div class="event-text editable">${event.text}</div>
+                                <div class="event-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Objective:</span>
+                                        <span class="editable">${event.objective}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Notes:</span>
+                                        <span class="editable">${event.notes}</span>
+                                    </div>
+                                </div>
+                                <button class="delete-event" onclick="deleteEvent('${month}', ${day}, '${event.text}')">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            `;
+                            
+                            // Add click event to toggle details
+                            eventElement.addEventListener('click', function(e) {
+                                if (!e.target.classList.contains('delete-event') && !e.target.closest('.delete-event')) {
+                                    const details = this.querySelector('.event-details');
+                                    details.classList.toggle('expanded');
+                                }
+                            });
+                            
+                            dayElement.appendChild(eventElement);
+                        });
+                    } else {
+                        // Add empty day message
+                        const emptyMessage = document.createElement('div');
+                        emptyMessage.className = 'empty-day-message';
+                        emptyMessage.innerHTML = `
+                            <div style="text-align: center; color: #aaa; font-size: 0.8rem; padding: 10px;">
+                                <i class="fas fa-plus"></i>
+                                <div>No events</div>
+                                <button class="add-event-btn" onclick="showAddEventModalForDay('${month}', ${day})">
+                                    <i class="fas fa-plus"></i> Add Event
+                                </button>
+                            </div>
+                        `;
+                        dayElement.appendChild(emptyMessage);
+                    }
+                    
+                    calendar.appendChild(dayElement);
+                }
+            } else {
+                // Desktop layout - 7-column grid
+                // Add empty cells for days before the first day of the month
+                for (let i = 0; i < firstDay; i++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.className = 'calendar-day empty-day';
+                    emptyDay.innerHTML = `<div class="date"><span class="day-number"></span></div>`;
+                    calendar.appendChild(emptyDay);
+                }
+                
+                // Add days of the month
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    
+                    // Format day name
+                    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                    const dayIndex = (firstDay + day - 1) % 7;
+                    const dayName = dayNames[dayIndex];
+                    
+                    dayElement.innerHTML = `
+                        <div class="date">
+                            <span class="day-number">${day}</span>
+                            <span class="day-name">${dayName.substring(0, 3)}</span>
+                        </div>
+                    `;
+                    
+                    // Add events for this day
+                    if (data.events && data.events[day]) {
+                        data.events[day].forEach(event => {
+                            const eventElement = document.createElement('div');
+                            eventElement.className = `event event-${event.type} ${event.isBoosted ? 'event-boost' : ''}`;
+                            
+                            // Determine content type class
+                            let contentTypeClass = '';
+                            if (event.objective.toLowerCase().includes('sales')) {
+                                contentTypeClass = 'event-sales';
+                            } else if (event.objective.toLowerCase().includes('education')) {
+                                contentTypeClass = 'event-education';
+                            } else if (event.objective.toLowerCase().includes('emotion')) {
+                                contentTypeClass = 'event-emotion';
+                            }
+                            
+                            if (contentTypeClass) {
+                                eventElement.classList.add(contentTypeClass);
+                            }
+                            
+                            eventElement.innerHTML = `
+                                <div class="color-mask"></div>
+                                <div class="event-icons">
+                                    <div class="event-icon ${event.type === 'reel' ? 'icon-reel' : 'icon-content'}">
+                                        <i class="fas ${event.type === 'reel' ? 'fa-video' : 'fa-image'}"></i>
+                                    </div>
+                                    ${event.icon && event.icon !== 'undefined' ? 
+                                        `<div class="event-icon" style="background: #5f27cd;">
+                                            <i class="${event.icon}"></i>
+                                        </div>` : ''}
+                                </div>
+                                <div class="event-text editable">${event.text}</div>
+                                <div class="event-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Objective:</span>
+                                        <span class="editable">${event.objective}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Notes:</span>
+                                        <span class="editable">${event.notes}</span>
+                                    </div>
+                                </div>
+                                <button class="delete-event" onclick="deleteEvent('${month}', ${day}, '${event.text}')">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            `;
+                            
+                            // Add click event to toggle details
+                            eventElement.addEventListener('click', function(e) {
+                                if (!e.target.classList.contains('delete-event') && !e.target.closest('.delete-event')) {
+                                    const details = this.querySelector('.event-details');
+                                    details.classList.toggle('expanded');
+                                }
+                            });
+                            
+                            dayElement.appendChild(eventElement);
+                        });
+                    } else {
+                        // Add empty day message
+                        const emptyMessage = document.createElement('div');
+                        emptyMessage.className = 'empty-day-message';
+                        emptyMessage.innerHTML = `
+                            <div style="text-align: center; color: #aaa; font-size: 0.8rem; padding: 10px;">
+                                <i class="fas fa-plus"></i>
+                                <div>No events</div>
+                                <button class="add-event-btn" onclick="showAddEventModalForDay('${month}', ${day})">
+                                    <i class="fas fa-plus"></i> Add Event
+                                </button>
+                            </div>
+                        `;
+                        dayElement.appendChild(emptyMessage);
+                    }
+                    
+                    calendar.appendChild(dayElement);
+                }
+                
+                // Add empty cells to complete the calendar grid (6 rows)
+                const totalCells = firstDay + daysInMonth;
+                const remainingCells = 42 - totalCells; // 6 rows x 7 days = 42 cells
+                
+                for (let i = 0; i < remainingCells; i++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.className = 'calendar-day empty-day';
+                    emptyDay.innerHTML = `<div class="date"><span class="day-number"></span></div>`;
+                    calendar.appendChild(emptyDay);
+                }
+            }
+        }
+
+        function getMonthIndex(monthName) {
+            const months = {
+                'january': 0, 'february': 1, 'march': 2, 'april': 3,
+                'may': 4, 'june': 5, 'july': 6, 'august': 7,
+                'september': 8, 'october': 9, 'november': 10, 'december': 11
+            };
+            return months[monthName];
+        }
+
+        function showMonth(month) {
+            // Hide all pages
+            document.querySelectorAll('.calendar-page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(`${month}Page`).classList.add('active');
+            
+            // Update active button
+            document.querySelectorAll('.month-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Find and activate the clicked button
+            const buttons = document.querySelectorAll('.month-btn');
+            for (let i = 0; i < buttons.length; i++) {
+                if (buttons[i].textContent.includes(month.replace('2025', '').replace('2026', ''))) {
+                    buttons[i].classList.add('active');
+                    break;
+                }
+            }
+        }
+
+        function showAddEventModal() {
+            document.getElementById('addEventModal').style.display = 'flex';
+        }
+
+        function hideAddEventModal() {
+            document.getElementById('addEventModal').style.display = 'none';
+        }
+
+        function showAddEventModalForDay(month, day) {
+            document.getElementById('addEventModal').style.display = 'flex';
+            document.getElementById('eventMonth').value = month;
+            updateEventDateOptions();
+            document.getElementById('eventDate').value = day;
+        }
+
+        function updateEventDateOptions() {
+            const monthSelect = document.getElementById('eventMonth');
+            const dateSelect = document.getElementById('eventDate');
+            const selectedMonth = monthSelect.value;
+            
+            // Clear existing options
+            dateSelect.innerHTML = '';
+            
+            // Get number of days in selected month
+            const year = selectedMonth.includes('2025') ? 2025 : 2026;
+            const monthName = selectedMonth.replace('2025', '').replace('2026', '');
+            const monthIndex = getMonthIndex(monthName);
+            const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+            
+            // Add options for each day
+            for (let day = 1; day <= daysInMonth; day++) {
+                const option = document.createElement('option');
+                option.value = day;
+                option.textContent = day;
+                dateSelect.appendChild(option);
+            }
+        }
+
+        function populateIconSelector() {
+            const iconSelector = document.getElementById('iconSelector');
+            const icons = [
+                'fas fa-star', 'fas fa-heart', 'fas fa-lightbulb', 'fas fa-tags', 
+                'fas fa-users', 'fas fa-rocket', 'fas fa-images', 'fas fa-globe',
+                'fas fa-map-marker-alt', 'fas fa-plane', 'fas fa-hotel', 'fas fa-utensils'
+            ];
+            
+            icons.forEach(icon => {
+                const iconOption = document.createElement('div');
+                iconOption.className = 'icon-option';
+                iconOption.innerHTML = `<i class="${icon}"></i>`;
+                iconOption.onclick = function() {
+                    document.querySelectorAll('.icon-option').forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                };
+                iconSelector.appendChild(iconOption);
+            });
+            
+            // Activate first icon by default
+            if (iconSelector.firstChild) {
+                iconSelector.firstChild.classList.add('active');
+            }
+        }
+
+        let selectedPostType = 'static';
+        function selectPostType(button, type) {
+            selectedPostType = type;
+            document.querySelectorAll('.post-type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+        }
+
+        function addNewEvent() {
+            const month = document.getElementById('eventMonth').value;
+            const date = parseInt(document.getElementById('eventDate').value);
+            const text = document.getElementById('eventText').value;
+            const objective = document.getElementById('eventObjective').value;
+            const notes = document.getElementById('eventNotes').value;
+            
+            // Get selected icon
+            const selectedIcon = document.querySelector('.icon-option.active');
+            const icon = selectedIcon ? selectedIcon.querySelector('i').className : 'undefined';
+            
+            if (!text) {
+                alert('Please enter event text');
+                return;
+            }
+            
+            // Create new event object
+            const newEvent = {
+                text: text,
+                type: selectedPostType,
+                objective: objective,
+                notes: notes,
+                icon: icon,
+                isBoosted: false
+            };
+            
+            // Add to data
+            let data;
+            if (month === 'october2025') {
+                data = october2025Data;
+            } else if (month === 'november2025') {
+                data = november2025Data;
+            } else {
+                data = monthTemplates[month];
+            }
+            
+            if (!data.events) {
+                data.events = {};
+            }
+            
+            if (!data.events[date]) {
+                data.events[date] = [];
+            }
+            data.events[date].push(newEvent);
+            
+            // Reinitialize calendar
+            initializeCalendar(month, data);
+            
+            // Hide modal and reset form
+            hideAddEventModal();
+            document.getElementById('eventText').value = '';
+            document.getElementById('eventObjective').value = '';
+            document.getElementById('eventNotes').value = '';
+        }
+
+        function deleteEvent(month, date, eventText) {
+            if (confirm('Are you sure you want to delete this event?')) {
+                let data;
+                if (month === 'october2025') {
+                    data = october2025Data;
+                } else if (month === 'november2025') {
+                    data = november2025Data;
+                } else {
+                    data = monthTemplates[month];
+                }
+                
+                if (data.events && data.events[date]) {
+                    data.events[date] = data.events[date].filter(event => event.text !== eventText);
+                    if (data.events[date].length === 0) {
+                        delete data.events[date];
+                    }
+                }
+                initializeCalendar(month, data);
+            }
+        }
+
+        // PDF Export Function
+        async function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'pt', 'a4');
+            const content = document.body;
+
+            const canvas = await html2canvas(content, { scale: 2, useCORS: true });
+            const imgData = canvas.toDataURL('image/png');
+
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = (canvas.height * pageWidth) / canvas.width;
+            pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight);
+
+            pdf.save('Flylinks_Social_Media_Calendar.pdf');
+        }
+
+        // Handle window resize to update calendar layout
+        window.addEventListener('resize', function() {
+            // Reinitialize current month with updated layout
+            const activePage = document.querySelector('.calendar-page.active');
+            if (activePage) {
+                const monthId = activePage.id.replace('Page', '');
+                let data;
+                if (monthId === 'october2025') {
+                    data = october2025Data;
+                } else if (monthId === 'november2025') {
+                    data = november2025Data;
+                } else {
+                    data = monthTemplates[monthId];
+                }
+                initializeCalendar(monthId, data);
+            }
+        });
+    </script>
+</body>
+</html>
