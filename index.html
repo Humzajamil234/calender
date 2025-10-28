@@ -612,6 +612,23 @@
             100% { opacity: 1; }
         }
 
+        /* PDF Export Specific Styles */
+        .pdf-export-mode .edit-controls,
+        .pdf-export-mode .month-navigation {
+            display: none !important;
+        }
+
+        .pdf-export-mode .calendar-page {
+            display: block !important;
+            margin-bottom: 40px;
+            page-break-after: always;
+        }
+
+        .pdf-export-mode .calendar-container {
+            box-shadow: none;
+            border: 1px solid #ddd;
+        }
+
         /* Mobile-specific styles */
         @media (max-width: 768px) {
             body {
@@ -862,9 +879,47 @@
                 margin-top: 5px;
             }
         }
+
+        /* Loading overlay for PDF export */
+        #pdfLoading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            flex-direction: column;
+            color: white;
+        }
+
+        .loading-spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #2a3eb1;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+    <!-- PDF Loading Overlay -->
+    <div id="pdfLoading">
+        <div class="loading-spinner"></div>
+        <h3>Generating PDF...</h3>
+        <p>Please wait, this may take a moment</p>
+    </div>
+
     <div class="edit-controls">
         <button class="edit-btn" onclick="exportToPDF()" style="background: #a55eea;">
             <i class="fas fa-file-pdf"></i> Export to PDF
@@ -2210,20 +2265,109 @@
             }
         }
 
-        // PDF Export Function
+        // IMPROVED PDF EXPORT FUNCTION - Works on both Mobile and Desktop
         async function exportToPDF() {
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'pt', 'a4');
-            const content = document.body;
-
-            const canvas = await html2canvas(content, { scale: 2, useCORS: true });
-            const imgData = canvas.toDataURL('image/png');
-
-            const pageWidth = pdf.internal.pageSize.getWidth();
-            const pageHeight = (canvas.height * pageWidth) / canvas.width;
-            pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight);
-
-            pdf.save('Flylinks_Social_Media_Calendar.pdf');
+            
+            // Show loading
+            const pdfLoading = document.getElementById('pdfLoading');
+            pdfLoading.style.display = 'flex';
+            
+            try {
+                // Create PDF in landscape mode for better calendar display
+                const pdf = new jsPDF('l', 'mm', 'a4'); // Landscape mode
+                
+                // Get all calendar pages
+                const calendarPages = document.querySelectorAll('.calendar-page');
+                let currentPage = 0;
+                
+                for (let i = 0; i < calendarPages.length; i++) {
+                    const page = calendarPages[i];
+                    
+                    // Create a temporary container for PDF export
+                    const tempContainer = document.createElement('div');
+                    tempContainer.style.position = 'absolute';
+                    tempContainer.style.left = '-9999px';
+                    tempContainer.style.top = '0';
+                    tempContainer.style.width = '280mm'; // Landscape width
+                    tempContainer.style.background = 'white';
+                    tempContainer.style.padding = '20px';
+                    tempContainer.style.boxSizing = 'border-box';
+                    
+                    // Clone the page content
+                    const clone = page.cloneNode(true);
+                    
+                    // Apply PDF-specific styles
+                    clone.style.width = '100%';
+                    clone.style.margin = '0';
+                    clone.style.padding = '0';
+                    
+                    // Remove interactive elements for PDF
+                    const elementsToRemove = clone.querySelectorAll('.edit-controls, .month-navigation, .no-export, button, .delete-event, .add-event-btn');
+                    elementsToRemove.forEach(el => el.remove());
+                    
+                    // Make editable fields look normal
+                    const editableFields = clone.querySelectorAll('.editable');
+                    editableFields.forEach(field => {
+                        field.style.border = 'none';
+                        field.style.background = 'transparent';
+                        field.style.cursor = 'default';
+                    });
+                    
+                    tempContainer.appendChild(clone);
+                    document.body.appendChild(tempContainer);
+                    
+                    // Use html2canvas with optimized settings
+                    const canvas = await html2canvas(tempContainer, {
+                        scale: 2, // Good quality
+                        useCORS: true,
+                        backgroundColor: '#ffffff',
+                        width: tempContainer.scrollWidth,
+                        height: tempContainer.scrollHeight,
+                        scrollX: 0,
+                        scrollY: 0,
+                        windowWidth: tempContainer.scrollWidth,
+                        windowHeight: tempContainer.scrollHeight
+                    });
+                    
+                    const imgData = canvas.toDataURL('image/jpeg', 0.9);
+                    
+                    // Calculate dimensions for PDF (landscape)
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = pdf.internal.pageSize.getHeight();
+                    const imgWidth = canvas.width;
+                    const imgHeight = canvas.height;
+                    
+                    const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+                    const imgWidthPdf = imgWidth * ratio;
+                    const imgHeightPdf = imgHeight * ratio;
+                    
+                    const x = (pdfWidth - imgWidthPdf) / 2;
+                    const y = (pdfHeight - imgHeightPdf) / 2;
+                    
+                    // Add new page if not the first page
+                    if (currentPage > 0) {
+                        pdf.addPage();
+                    }
+                    
+                    // Add image to PDF
+                    pdf.addImage(imgData, 'JPEG', x, y, imgWidthPdf, imgHeightPdf);
+                    
+                    // Clean up
+                    document.body.removeChild(tempContainer);
+                    currentPage++;
+                }
+                
+                // Save the PDF
+                pdf.save('Flylinks_Social_Media_Calendar_2025-2026.pdf');
+                
+            } catch (error) {
+                console.error('PDF export error:', error);
+                alert('Error generating PDF: ' + error.message);
+            } finally {
+                // Hide loading
+                pdfLoading.style.display = 'none';
+            }
         }
 
         // Handle window resize to update calendar layout
